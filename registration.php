@@ -4,6 +4,7 @@ $result = '';
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$email = clearStr($_POST['email']) ?: $email;
+	
 	if(userExists($email) == false) {
 		$password = clearStr($_POST['password']) ?: $password;
 		$hash = getHash($password);
@@ -19,8 +20,4 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-echo $result;	
-/*
-		
-
-*/
+?>
