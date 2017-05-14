@@ -8,8 +8,10 @@ $db->select_db("library");
 $db->query("CREATE TABLE IF NOT EXISTS admins (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   email varchar(255) NOT NULL UNIQUE,
-  hash varchar(255) NOT NULL UNIQUE) ");
-
+  hash varchar(255) NOT NULL UNIQUE,
+  status varchar(255) NOT NULL DEFAULT 'user',
+  auth_token varchar(255) NOT NULL DEFAULT 'none' UNIQUE) ");
+  
 $db->query("CREATE TABLE IF NOT EXISTS products(
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(45) NOT NULL DEFAULT '',

@@ -1,28 +1,33 @@
 <?php 
-session_start();
-header("HTTP/1.0 401 Unauthorized");
+
 require "inc/secure.inc.php";
-	
-if($_SERVER['REQUEST_METHOD']=='POST') {
+require "inc/routing.inc.php";	
+
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$email = clearStr($_POST['email']) ?: $email;
- 	$founded = searchUser($email);
-
- 	if(in_array($email, $founded)) {
+ 	$user= searchUser($email);
+ 	var_dump($user);
+ 	if($user) {
  		$password = clearStr($_POST['password']) ?: $password;
+ 		if(password_verify($password, $user['hash'])) {
+ 			if($user['status'] == "status-admin") {
+	 			$user_type = "admin";
+	 			setcookie("admin", ($user["id"]), time()+3600);
+ 				
+ 			}else{
+ 				$user_type = "user";
+ 				setcookie("user", ($user["id"]), time()+3600);
 
- 		if(checkHash($password, checkUser($email))) {
- 			$_SESSION['user_id'] = "admin";
- 			header("Location:admin");
+ 			}
+ 			
  		}else{
- 			echo"Пароль не подошел";
- 		}
+ 			echo "Пароль не подошел";
+ 		} 		
+
  	}else{
- 		header("Location:alerts/error.html");
-
- 	}	
+ 		$user_type = "error";
+ 	}
 }
 
-if (!isset($_SESSION['user_id'])) {
-	header("Location:login.html");
-}
+rediRect($user_type);
 ?>

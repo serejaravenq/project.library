@@ -1,32 +1,28 @@
 <?php
-include "configdb.php";
-include "filter.php";
+require "configdb.php";
+require "filter.php";
 
 function getHash($password) {
 	$hash = password_hash($password,PASSWORD_BCRYPT);
-	return trim($hash);
+	return $hash;
 }
 
-function checkHash($password, $hash) {
-	return password_verify(trim($password), trim($hash));
-}
-
-
-
-function saveUser($email, $hash) {
+function saveUser($email, $hash, $status, $auth_token) {
 	global $link;
 	$email = mysqli_real_escape_string($link, $email);
-	$hash = mysqli_real_escape_string($link, $hash);
+	
 	$sql = "INSERT INTO admins(
     email,
-    hash)
-    VALUES(?, ?)";
+    hash,
+    status,
+    auth_token)
+    VALUES(?, ?, ?, ?)";
 
     if(!$stmt= mysqli_prepare($link, $sql)) {
     	return false;
     }
 
-    mysqli_stmt_bind_param($stmt,"ss",$email, $hash);
+    mysqli_stmt_bind_param($stmt,"ssss",$email, $hash, $status, $auth_token);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     return true;
@@ -45,17 +41,17 @@ function userExists($email) {
 	mysqli_free_result($result);
 }
 
+
 function searchUser($email) {
 	global $link;
-	$sql = "SELECT email FROM admins WHERE email = '$email' " ;
-	$result = mysqli_query($link, $sql);
+	$sql = "SELECT * FROM admins WHERE email = '$email' " ;
+	$result = mysqli_query($link, $sql, MYSQLI_USE_RESULT);
 	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-		if(count($row)>0) {
+		if(count($row) > 0) {
 			return $row;
 		}else{
-			$row = array();
-			return $row;
+			return false;
 		}
 	mysqli_free_result($result);
 }
@@ -66,5 +62,11 @@ function checkUser($email) {
 	$result = mysqli_query($link, $sql);
 	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 	return $row['hash'];
-}	
+}
+
+/*function saveCookie($auth_token) {
+	global $link;
+	$sql = "UPDATE admins SET auth_token = '$auth_token' WHERE ";
+}
+*/
 ?>

@@ -1,5 +1,14 @@
 <?php
-if(isset($_GET['logout'])) {}
+
+if(isset($_COOKIE['admin'])) {
+	$auth_token = $_COOKIE['admin'];
+	
+
+}else{
+	header("Location: http://".$_SERVER['HTTP_HOST']."/project.library/login.hmtl");
+	exit;
+}
+
 ?>
 
 <!DOCTYPE HTML>
