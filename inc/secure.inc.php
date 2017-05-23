@@ -7,14 +7,14 @@ function getHash($password) {
 	return $hash;
 }
 
-function saveUser($email, $hash, $status, $auth_token) {
+function saveUser($email, $hash, $role, $auth_token) {
 	global $link;
 	$email = mysqli_real_escape_string($link, $email);
 	
 	$sql = "INSERT INTO admins(
     email,
     hash,
-    status,
+    role,
     auth_token)
     VALUES(?, ?, ?, ?)";
 
@@ -22,7 +22,7 @@ function saveUser($email, $hash, $status, $auth_token) {
     	return false;
     }
 
-    mysqli_stmt_bind_param($stmt,"ssss",$email, $hash, $status, $auth_token);
+    mysqli_stmt_bind_param($stmt,"ssss",$email, $hash, $role, $auth_token);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     return true;
@@ -64,9 +64,17 @@ function checkUser($email) {
 	return $row['hash'];
 }
 
-/*function saveCookie($auth_token) {
+function checkRole($auth_token) {
 	global $link;
-	$sql = "UPDATE admins SET auth_token = '$auth_token' WHERE ";
+	$sql = "SELECT * FROM admins WHERE auth_token = '$auth_token' ";
+	$result = mysqli_query($link, $sql);
+	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	if(mysqli_num_rows($result) >0) {
+			return $row;
+		}else{
+			return false;
+		}	
+	mysqli_free_result($result);
 }
-*/
+
 ?>

@@ -1,7 +1,7 @@
 <?php 
 
 require "inc/secure.inc.php";
-require "inc/routing.inc.php";	
+require "inc/redirect.inc.php";	
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$email = clearStr($_POST['email']) ?: $email;
@@ -10,13 +10,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
  	if($user) {
  		$password = clearStr($_POST['password']) ?: $password;
  		if(password_verify($password, $user['hash'])) {
- 			if($user['status'] == "status-admin") {
+ 			if($user['role'] == "status-admin") {
 	 			$user_type = "admin";
-	 			setcookie("admin", ($user["id"]), time()+3600);
+	 			setcookie("admin", md5($user["email"]), time()+3600);
  				
  			}else{
  				$user_type = "user";
- 				setcookie("user", ($user["id"]), time()+3600);
+ 				setcookie("user", md5($user["email"]), time()+3600);
 
  			}
  			

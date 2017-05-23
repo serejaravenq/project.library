@@ -9,8 +9,8 @@ $db->query("CREATE TABLE IF NOT EXISTS admins (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   email varchar(255) NOT NULL UNIQUE,
   hash varchar(255) NOT NULL UNIQUE,
-  status varchar(255) NOT NULL DEFAULT 'user',
-  auth_token varchar(255) NOT NULL DEFAULT 'none' UNIQUE) ");
+  role varchar(255) NOT NULL DEFAULT '',
+  auth_token varchar(255) NOT NULL DEFAULT '' UNIQUE) ");
   
 $db->query("CREATE TABLE IF NOT EXISTS products(
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
